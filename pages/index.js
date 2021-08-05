@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <div
       style={{
-        display: "flex",
         flex: "1",
+        display: "flex",
         flexWrap: "wrap",
         flexDirection: "column",
         justifyContent: "space-between",

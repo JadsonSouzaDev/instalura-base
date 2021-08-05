@@ -1,47 +1,54 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
+import get from "lodash/get";
+import PropTypes from "prop-types";
 
 const paragraph1 = css`
-  font-size: ${({ theme }) => theme.typography.paragraph1.fontSize};
-  font-weight: ${({ theme }) => theme.typography.paragraph1.fontWeight};
-  line-height: ${({ theme }) => theme.typography.paragraph1.lineHeight};
+  ${({ theme }) => css`
+    font-size: ${theme.typographyVariants.paragraph1.fontSize};
+    font-weight: ${theme.typographyVariants.paragraph1.fontWeight};
+    line-height: ${theme.typographyVariants.paragraph1.lineHeight};
+  `}
 `;
 
 const smallestException = css`
-  font-size: ${({ theme }) => theme.typography.smallestException.fontSize};
-  font-weight: ${({ theme }) => theme.typography.smallestException.fontWeight};
-  line-height: ${({ theme }) => theme.typography.smallestException.lineHeight};
+  ${({ theme }) => css`
+    font-size: ${theme.typographyVariants.smallestException.fontSize};
+    font-weight: ${theme.typographyVariants.smallestException.fontWeight};
+    line-height: ${theme.typographyVariants.smallestException.lineHeight};
+  `}
 `;
 
-export const TextStyleVariantsMap = {
-  paragraph1,
+export const TextStyleVariants = {
   smallestException,
+  paragraph1,
 };
 
 const TextBase = styled.span`
-  ${({ variant }) => {
-    return TextStyleVariantsMap[variant];
-  }}
+  ${({ variant }) => TextStyleVariants[variant]}
+  color: ${({ theme, color }) => get(theme, `colors.${color}.color`)};
 `;
 
-const Text = ({ tag, variant, children }) => {
+export function Text({ variant, children, tag, ...props }) {
   return (
-    <TextBase as={tag} variant={variant}>
+    <TextBase
+      as={tag}
+      variant={variant}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+    >
       {children}
     </TextBase>
   );
-};
-
-Text.propTypes = {
-  tag: PropTypes.string,
-  variant: PropTypes.string,
-  children: PropTypes.node.isRequired,
-};
+}
 
 Text.defaultProps = {
   tag: "span",
   variant: "paragraph1",
 };
 
-export default Text;
+Text.propTypes = {
+  children: PropTypes.node.isRequired,
+  tag: PropTypes.oneOf(["h1", "h2", "h3", "h4", "h5", "p", "li", "a", "span"]),
+  variant: PropTypes.oneOf(["paragraph1", "smallestException"]),
+};
